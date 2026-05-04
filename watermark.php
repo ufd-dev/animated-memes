@@ -223,7 +223,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <!-- File Upload -->
       <div class="form-group">
         <label class="section-label" for="mediaFile">Upload any standard GIF/video format:</label>
-        <input type="file" id="mediaFile" name="mediaFile" required />
+        <input type="file" id="mediaFile" name="mediaFile" required
+          accept="video/*, .mov, .gif, .webp, .apng, .avif" />
       </div>
 
       <!-- Watermark Corner -->
