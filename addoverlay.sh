@@ -53,7 +53,7 @@ else
 fi
 
 settings=(
-  -n                         # do not overwrite
+  -loglevel error
   -brand mp42                # avoids quicktime (early mp4) container
   -c:v libx264               # recommended encoding
   -crf 20                    # constant rate facotr; default 23; lower is higher quality
@@ -73,6 +73,15 @@ settings=(
 base_filename=$(basename "${src%.*}")
 outfile="out/${base_filename}${out_suffix}.mp4"
 
+[[ -f "$outfile" ]] && rm "$outfile"
 mkdir -p out
-ffmpeg "${inputs[@]}" "${settings[@]}" "$outfile"
 
+error_log=$(mktemp)
+if ffmpeg "${inputs[@]}" "${settings[@]}" "$outfile" >/dev/null 2>"$error_log"; then
+  echo "$outfile"
+  rm "$error_log"
+else
+  cat "$error_log"
+  rm "$error_log"
+  exit 1
+fi
