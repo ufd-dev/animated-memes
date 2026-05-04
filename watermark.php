@@ -113,9 +113,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
         Arial, sans-serif;
       max-width: 600px;
-      margin: 40px auto;
+      margin: 0 auto;
       padding: 20px;
-      background-color: #f9f9f9;
+      background-color: #999999;
     }
 
     .form-container {
@@ -343,11 +343,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               // Delete the cookie so it's ready for the next upload
               document.cookie = "download_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
-              // Reset the button appearance and unlock the form
-              submitBtn.textContent = originalText;
-              submitBtn.style.opacity = '1';
-              submitBtn.style.cursor = 'pointer';
-              isSubmitting = false;
+              // Hide the password field if present; we just succeeded, so they're authorized
+              const passGroup = document.getElementById('password')?.closest('.form-group');
+              if (passGroup) {
+                // Create the badge
+                const authBadge = document.createElement('div');
+                authBadge.className = 'auth-status';
+                authBadge.textContent = '✓ Authenticated';
+
+                // Replace the password group with the badge
+                passGroup.parentNode.replaceChild(authBadge, passGroup);
+              }
 
               // Reset all form inputs
               form.reset();
@@ -355,6 +361,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               // E. Re-apply the disabled styling to the color radios
               // (Because form.reset() changes values but doesn't trigger 'change' events)
               updateColorState('none');
+
+              // Reset the button appearance and unlock the form
+              submitBtn.textContent = originalText;
+              submitBtn.style.opacity = '1';
+              submitBtn.style.cursor = 'pointer';
+              isSubmitting = false;
             }
           }, 250);
         }
